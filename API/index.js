@@ -11,182 +11,54 @@ const dbConfig = {
   user: 'sa',
   password: 'antihack123',
   server: 'localhost',
-  database: 'WideWorldImporters',
+  database: 'proyecto',
   port: 1433,
 };
 const conn = new sql.ConnectionPool(dbConfig);
 
-app.get('/api/VerClientes', (req, res) => {
+app.post('/api/InsertarCliente', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
-      request.input('NombreCliente', sql.VarChar(255), '');
-      request.input('categoria', sql.VarChar(255), '');
-      request.input('DeliveryMethod', sql.VarChar(255), '');
-      request
-        .query(
-          'select CustomerName,CustomerCategoryName,DeliveryMethod from VerClientesConFiltro(@NombreCliente,@categoria,@DeliveryMethod) order by CustomerName asc'
-        )
-        .then(function (datos) {
-          res.json(datos.recordset);
-        })
-        .catch(function (err) {
-          res.send('Error de query');
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/VerClientesConFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('NombreCliente', sql.VarChar(255), req.body.NombreCliente);
-      request.input('categoria', sql.VarChar(255), req.body.categoria);
-      request.input('DeliveryMethod', sql.VarChar(255), '');
-
-      request
-        .query(
-          'select CustomerName,CustomerCategoryName,DeliveryMethod from VerClientesConFiltro(@NombreCliente,@categoria,@DeliveryMethod) order by CustomerName asc'
-        )
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send('Error de query');
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/VerCliente', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('NombreCliente', sql.VarChar(255), req.body.NombreCliente);
-      request.input('categoria', sql.VarChar(255), '');
-      request.input('DeliveryMethod', sql.VarChar(255), '');
-      request
-        .query(
-          'select * from VerClientesConFiltro(@NombreCliente,@categoria,@DeliveryMethod) order by CustomerName asc'
-        )
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send('Error de query');
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/VerCoordenadasCliente', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('NombreCliente', sql.VarChar(255), req.body.NombreCliente);
-      request
-        .query('select * from VerCoordenadasCliente(@NombreCliente)')
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send('Error de query');
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.get('/api/VistaMetodosEntregaCliente', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request
-        .query('select * from VistaMetodosEntregaCliente')
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send('Error de query');
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.get('/api/CategoriasClientes', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request
-        .query('select * from CategoriasClientes')
-        .then(function (datos) {
-          res.json(datos.recordset);
-        })
-        .catch(function (err) {
-          res.send('Error de query');
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-//--------------------------------------------FIN MODULO CLIENTES------------------------------------------------------------------------------------------
-app.get('/api/VerProveedores', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('Nombre', sql.VarChar(255), '');
-      request.input('categoria', sql.VarChar(255), '');
-      request.input('DeliveryMethod', sql.VarChar(255), '');
-      request
-        .query(
-          'select SupplierName,SupplierCategoryName,DeliveryMethod from VerProveedoresConFiltro(@Nombre,@categoria,@DeliveryMethod) order by SupplierName asc'
-        )
-        .then(function (datos) {
-          res.json(datos.recordset);
-        })
-        .catch(function (err) {
-          res.send('Error de query');
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/VerProveedoresFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
+      request.input('Identificacion', sql.Int, req.body.Identificacion);
+      request.input('TipoIdentificacion', sql.VarChar(255), req.body.TipoIdentificacion);
       request.input('Nombre', sql.VarChar(255), req.body.Nombre);
-      request.input('categoria', sql.VarChar(255), req.body.categoria);
-      request.input(
-        'DeliveryMethod',
-        sql.VarChar(255),
-        req.body.DeliveryMethod
-      );
+      request.input('Apellidos', sql.VarChar(255), req.body.Apellidos);
+      request.input('NumeroCelular', sql.VarChar(255), req.body.NumeroCelular);
+      request.input('Correo', sql.VarChar(255), req.body.Correo);
+      request.input('Direccion', sql.VarChar(255), req.body.Direccion);
+      request.input('FechaNacimiento', sql.VarChar(255), req.body.FechaNacimiento);
       request
-        .query(
-          'select SupplierName,SupplierCategoryName,DeliveryMethod from VerProveedoresConFiltro(@Nombre,@categoria,@DeliveryMethod) order by SupplierName asc'
+        .execute(
+          'InsertarCliente'
         )
+        .then(function (datos) {
+          res.json(datos);
+        })
+        .catch(function (err) {
+          res.send(err);
+        });
+    })
+    .catch(function (err) {
+      res.send(err);
+    });
+});
+
+app.post('/api/EditarCliente', (req, res) => {
+  conn
+    .connect()
+    .then(function () {
+      var request = new sql.Request(conn);
+      request.input('CodigoCliente', sql.Int, req.body.CodigoCliente);
+      request.input('NumeroCelular', sql.Int, req.body.NumeroCelular);
+      request.input('Correo', sql.VarChar(255), req.body.Correo);
+      request.input('Direccion', sql.VarChar(255), req.body.Direccion);
+
+      request
+      .execute(
+        'EditarCliente'
+      )
         .then(function (datos) {
           res.json(datos);
         })
@@ -199,17 +71,44 @@ app.post('/api/VerProveedoresFiltro', (req, res) => {
     });
 });
 
-app.post('/api/VerProveedor', (req, res) => {
+app.post('/api/EliminarCliente', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
+      request.input('CodigoCliente', sql.Int, req.body.CodigoCliente);
+  
+      request
+      .execute(
+        'EliminarCliente'
+      )
+        .then(function (datos) {
+          res.json(datos);
+        })
+        .catch(function (err) {
+          res.send('Error de query');
+        });
+    })
+    .catch(function (err) {
+      res.send('No hay resultados');
+    });
+});
+//---------------------------------------------------------------
+app.post('/api/InsertarEmpleado', (req, res) => {
+  conn
+    .connect()
+    .then(function () {
+      var request = new sql.Request(conn);
+      request.input('Identificacion', sql.Int, req.body.Identificacion);
+      request.input('TipoIdentificacion', sql.VarChar(255), req.body.TipoIdentificacion);
       request.input('Nombre', sql.VarChar(255), req.body.Nombre);
-      request.input('categoria', sql.VarChar(255), '');
-      request.input('DeliveryMethod', sql.VarChar(255), '');
+      request.input('CodPuesto', sql.Int, req.body.CodPuesto);
+      request.input('Telefono', sql.Int, req.body.Telefono);
+      request.input('Correo', sql.VarChar(255), req.body.Correo);
+      request.input('Direccion', sql.VarChar(255), req.body.Direccion);
       request
-        .query(
-          'select * from VerProveedoresConFiltro(@Nombre,@categoria,@DeliveryMethod) order by SupplierName asc'
+        .execute(
+          'InsertarEmpleado'
         )
         .then(function (datos) {
           res.json(datos);
@@ -223,15 +122,43 @@ app.post('/api/VerProveedor', (req, res) => {
     });
 });
 
-app.post('/api/VerCoordenadasProveedor', (req, res) => {
+
+app.post('/api/EditarEmpleado', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
-      request.input('Nombre', sql.VarChar(255), req.body.Nombre);
-
+      request.input('CodigoEmpleado', sql.Int, req.body.CodigoEmpleado);
+      request.input('Telefono', sql.Int, req.body.Telefono);
+      request.input('Correo', sql.VarChar(255), req.body.Correo);
+      request.input('Direccion', sql.VarChar(255), req.body.Direccion);
       request
-        .query('select * from VerCoordenadasProveedor(@Nombre) ')
+        .execute(
+          'EditarEmpleado'
+        )
+        .then(function (datos) {
+          res.json(datos);
+        })
+        .catch(function (err) {
+          res.send(err);
+        });
+    })
+    .catch(function (err) {
+      res.send('No hay resultados');
+    });
+});
+
+app.post('/api/EliminarEmpleado', (req, res) => {
+  conn
+    .connect()
+    .then(function () {
+      var request = new sql.Request(conn);
+      request.input('CodigoEmpleado', sql.Int, req.body.CodigoEmpleado);
+  
+      request
+      .execute(
+        'EliminarEmpleado'
+      )
         .then(function (datos) {
           res.json(datos);
         })
@@ -244,15 +171,21 @@ app.post('/api/VerCoordenadasProveedor', (req, res) => {
     });
 });
 
-app.get('/api/CategoriasProveedores', (req, res) => {
+app.post('/api/InsertarLocal', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
       request
-        .query('select * from CategoriasProveedores')
-        .then(function (datos) {
-          res.json(datos.recordset);
+      request.input('Ubicacion', sql.VarChar(255), req.body.Ubicacion);
+      request.input('Telefono', sql.Int, req.body.Telefono);
+      request.input('Correo', sql.VarChar(255), req.body.Correo);
+      request.input('Direccionexacta', sql.VarChar(255), req.body.Direccionexacta);
+      request.input('Apartadopostal', sql.VarChar(255), req.body.Apartadopostal);
+      request.execute(
+        'InsertarLocal'
+      ).then(function (datos) {
+          res.json(datos);
         })
         .catch(function (err) {
           res.send('Error de query');
@@ -263,15 +196,44 @@ app.get('/api/CategoriasProveedores', (req, res) => {
     });
 });
 
-app.get('/api/VistaMetodosEntregaProveedor', (req, res) => {
+app.post('/api/EditarLocal', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
       request
-        .query('select * from VistaMetodosEntregaProveedor')
+      request.input('CodigoLocal', sql.Int, req.body.CodigoLocal);
+      request.input('Telefono', sql.Int, req.body.Telefono);
+      request.input('Correo', sql.VarChar(255), req.body.Correo);
+      request.input('Direccion', sql.VarChar(255), req.body.Direccion);
+      request.input('Apartadopostal', sql.VarChar(255), req.body.Apartadopostal);
+      request.execute(
+        'EditarLocal'
+      ).then(function (datos) {
+          res.json(datos);
+        })
+        .catch(function (err) {
+          res.send(err);
+        });
+    })
+    .catch(function (err) {
+      res.send('No hay resultados');
+    });
+});
+
+app.post('/api/EliminarLocal', (req, res) => {
+  conn
+    .connect()
+    .then(function () {
+      var request = new sql.Request(conn);
+      request.input('CodigoLocal', sql.Int, req.body.CodigoLocal);
+  
+      request
+      .execute(
+        'EliminarLocal'
+      )
         .then(function (datos) {
-          res.json(datos.recordset);
+          res.json(datos);
         })
         .catch(function (err) {
           res.send('Error de query');
@@ -282,26 +244,29 @@ app.get('/api/VistaMetodosEntregaProveedor', (req, res) => {
     });
 });
 
-//--------------------------------------------FIN MODULO PROVEEDORES------------------------------------------------------------------------------------------
-//min 3 max 1034169
-app.get('/api/VerProductos', (req, res) => {
+app.post('/api/InsertarProducto', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
-      request.input('StockItemName', sql.VarChar(255), '');
-      request.input('StockGroupName', sql.VarChar(255), '');
-      request.input('QuantityOnHandMax', sql.Int, 1034169);
-
       request
-        .query(
-          'select StockItemName,StockGroupName,QuantityOnHand  from VerProductosConFiltro(@StockItemName,@StockGroupName,@QuantityOnHandMax) order by StockItemName asc'
-        )
-        .then(function (datos) {
-          res.json(datos.recordset);
+      request.input('Descripcion', sql.VarChar(255), req.body.Descripcion);
+      request.input('CodEstilo', sql.Int, req.body.CodEstilo);
+      request.input('CodMaterial', sql.Int, req.body.CodMaterial);
+      request.input('CodColor', sql.Int, req.body.CodColor);
+      request.input('TallaNacional', sql.Float, req.body.TallaNacional);
+      request.input('TallaUSA', sql.Float, req.body.TallaUSA);
+      request.input('PrecioCosto', sql.Float, req.body.PrecioCosto);
+      request.input('PrecioVenta', sql.Float, req.body.PrecioVenta);
+      request.input('cantidad', sql.Int, req.body.cantidad);
+
+      request.execute(
+        'InsertarProducto'
+      ).then(function (datos) {
+          res.json(datos);
         })
         .catch(function (err) {
-          res.send(err);
+          res.send('Error de query');
         });
     })
     .catch(function (err) {
@@ -309,23 +274,71 @@ app.get('/api/VerProductos', (req, res) => {
     });
 });
 
-app.post('/api/VerProductosFiltro', (req, res) => {
+app.post('/api/EditarProducto', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
-      request.input('StockItemName', sql.VarChar(255), req.body.StockItemName);
-      request.input(
-        'StockGroupName',
-        sql.VarChar(255),
-        req.body.StockGroupName
-      );
-      request.input('QuantityOnHandMax', sql.Int, req.body.QuantityOnHandMax);
       request
-        .query(
-          'select StockItemName,StockGroupName,QuantityOnHand  from VerProductosConFiltro(@StockItemName,@StockGroupName,@QuantityOnHandMax) order by StockItemName asc'
-        )
-        .then(function (datos) {
+      request.input('CodigoProducto', sql.Int, req.body.CodigoProducto);
+      request.input('Descripcion', sql.VarChar(255), req.body.Descripcion);
+      request.input('CodEstilo', sql.Int, req.body.CodEstilo);
+      request.input('PrecioCosto', sql.Float, req.body.PrecioCosto);
+      request.input('PrecioVenta', sql.Float, req.body.PrecioVenta);
+
+      request.execute(
+        'EditarProducto'
+      ).then(function (datos) {
+          res.json(datos);
+        })
+        .catch(function (err) {
+          res.send('Error de query');
+        });
+    })
+    .catch(function (err) {
+      res.send('No hay resultados');
+    });
+});
+
+app.post('/api/EliminarProducto', (req, res) => {
+  conn
+    .connect()
+    .then(function () {
+      var request = new sql.Request(conn);
+      request
+      request.input('CodigoProducto', sql.Int, req.body.CodigoProducto);
+      request.execute(
+        'EliminarProducto'
+      ).then(function (datos) {
+          res.json(datos);
+        })
+        .catch(function (err) {
+          res.send('Error de query');
+        });
+    })
+    .catch(function (err) {
+      res.send('No hay resultados');
+    });
+});
+
+
+app.post('/api/InsertarProveedor', (req, res) => {
+  conn
+    .connect()
+    .then(function () {
+      var request = new sql.Request(conn);
+      request
+      request.input('Identificacion', sql.Int, req.body.Identificacion);
+      request.input('TipoIdentificacion', sql.VarChar(255), req.body.TipoIdentificacion);
+      request.input('Nombre', sql. VarChar(255), req.body.Nombre);
+      request.input('TelefonoFijo', sql.Int, req.body.TelefonoFijo);
+      request.input('TelefonoCelular', sql.Int, req.body.TelefonoCelular);
+      request.input('Correo', sql. VarChar(255), req.body.Correo);
+      request.input('Direccion', sql. VarChar(255), req.body.Direccion);
+
+      request.execute(
+        'InsertarProveedor'
+      ).then(function (datos) {
           res.json(datos);
         })
         .catch(function (err) {
@@ -337,19 +350,21 @@ app.post('/api/VerProductosFiltro', (req, res) => {
     });
 });
 
-app.post('/api/VerProducto', (req, res) => {
+app.post('/api/EditarProveedor', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
-      request.input('StockItemName', sql.VarChar(255), req.body.StockItemName);
-      request.input('StockGroupName', sql.VarChar(255), '');
-      request.input('QuantityOnHandMax', sql.Int, 1034169);
       request
-        .query(
-          'select * from VerProductosConFiltro(@StockItemName,@StockGroupName,@QuantityOnHandMax) order by StockItemName asc'
-        )
-        .then(function (datos) {
+      request.input('CodigoProveedor', sql.Int, req.body.CodigoProveedor);
+      request.input('telefonofijo', sql.Int, req.body.telefonofijo);
+      request.input('telefonocelular', sql.Int, req.body.telefonocelular);
+      request.input('correo', sql. VarChar(255), req.body.correo);
+      request.input('direccion', sql. VarChar(255), req.body.direccion);
+
+      request.execute(
+        'EditarProveedor'
+      ).then(function (datos) {
           res.json(datos);
         })
         .catch(function (err) {
@@ -361,105 +376,20 @@ app.post('/api/VerProducto', (req, res) => {
     });
 });
 
-app.get('/api/VerStockGroups', (req, res) => {
+app.post('/api/EliminarProveedor', (req, res) => {
   conn
     .connect()
     .then(function () {
       var request = new sql.Request(conn);
       request
-        .query(' select *  from VerStockGroups')
-        .then(function (datos) {
-          res.json(datos.recordset);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-//--------------------------------------------FIN MODULO PRODUCTOS------------------------------------------------------------------------------------------
-app.get('/api/VerFacturas', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('Cliente', sql.VarChar(255), '');
-      request.input('FechaMin', sql.Date, '2013-01-01');
-      request.input('FechaMax', sql.Date, '2016-05-31');
-      request.input('Monto', sql.Float,36829.90);
-      request
-        .query(
-          'select  top(100) InvoiceID,CustomerName,DeliveryMethod,TransactionAmount,InvoiceDate from VerFacturasConFiltro(@Cliente,@FechaMin,@FechaMax,@Monto ) order by CustomerName asc'
-        )
-        .then(function (datos) {
-          datos.recordset.map((key,i)=>(
-            key.InvoiceDate=new Date(key.InvoiceDate).toISOString().split('T')[0]
-          ));
-          res.json(datos.recordset);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-app.post('/api/VerFactura', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('invoiceID', sql.Int, req.body.InvoiceID);
-      request
-        .query('select * from VerFactura(@invoiceID)')
-        .then(function (datos) {
+      request.input('CodigoProveedor', sql.Int, req.body.CodigoProveedor);
+      request.execute(
+        'EliminarProveedor'
+      ).then(function (datos) {
           res.json(datos);
         })
         .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-app.post('/api/VerLineasFactura', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('invoiceID', sql.Int, req.body.InvoiceID);
-      request
-        .query('select * from VerLineasFactura(@invoiceID)')
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-app.get('/api/FechaMinFactura', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request
-        .query(' select *  from FechaMinFactura')
-        .then(function (datos) {
-          datos.recordset.map((key,i)=>(
-            key.FechaMin=new Date(key.FechaMin).toISOString().split('T')[0]
-          ));
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
+          res.send('Error de query');
         });
     })
     .catch(function (err) {
@@ -467,208 +397,5 @@ app.get('/api/FechaMinFactura', (req, res) => {
     });
 });
 
-app.get('/api/FechaMaxFactura', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request
-        .query(' select *  from FechaMaxFactura')
-        .then(function (datos) {
-          datos.recordset.map((key,i)=>(
-            key.FechaMax=new Date(key.FechaMax).toISOString().split('T')[0]
-          ));
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/VerFacturaFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('Cliente', sql.VarChar(255), req.body.Cliente);
-      request.input('FechaMin', sql.Date, req.body.FechaMin);
-      request.input('FechaMax', sql.Date, req.body.FechaMax);
-      request.input('Monto', sql.Float,req.body.Monto);
-
-      request
-        .query(
-          'select  top(1000) InvoiceID,CustomerName,DeliveryMethod,TransactionAmount,InvoiceDate from VerFacturasConFiltro(@Cliente,@FechaMin,@FechaMax,@Monto ) order by CustomerName asc'
-        )
-        .then(function (datos) {
-          datos.recordset.map((key,i)=>(
-            key.InvoiceDate=new Date(key.InvoiceDate).toISOString().split('T')[0]
-          ));
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-//----------------------FIN MODULO VENTAS / INICIO MODULO ESTADISTICAS
-app.get('/api/VentasProveedor', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('Proveedor', sql.VarChar(255), '');
-      request
-        .query('select * from VentasProveedor(@Proveedor)')
-        .then(function (datos) {
-          res.json(datos.recordset);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/VentasProveedorFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('Proveedor', sql.VarChar(255), req.body.Proveedor);
-      request
-        .query('select * from VentasProveedor(@Proveedor)')
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-//-----------
-app.get('/api/VentasCliente', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('Cliente', sql.VarChar(255), '');
-      request
-        .query('select * from VentasCliente(@Cliente)')
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/VentasClienteFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('Cliente', sql.VarChar(255), req.body.Cliente);
-      request
-        .query('select * from VentasCliente(@Cliente)')
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-//----------------------------------
-app.post('/api/top10productosFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('fechamin', sql.VarChar(255), req.body.fechamin);
-      request.input('fechamax', sql.VarChar(255), req.body.fechamax);
-
-      request
-        .query(
-          'select * from top10productos(@fechamin,@fechamax) order by ganancia desc'
-        )
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-//----
-
-app.post('/api/top10clientesFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('fechamin', sql.VarChar(255), req.body.fechamin);
-      request.input('fechamax', sql.VarChar(255), req.body.fechamax);
-      request
-        .query(
-          'select * from top10clientes(@fechamin,@fechamax) order by cantidadFacturas desc'
-        )
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-
-app.post('/api/top10proveedoresFiltro', (req, res) => {
-  conn
-    .connect()
-    .then(function () {
-      var request = new sql.Request(conn);
-      request.input('fechamin', sql.VarChar(255), req.body.fechamin);
-      request.input('fechamax', sql.VarChar(255), req.body.fechamax);
-
-      request
-        .query(
-          'select * from top10proveedores(@fechamin,@fechamax) order by cantidad desc'
-        )
-        .then(function (datos) {
-          res.json(datos);
-        })
-        .catch(function (err) {
-          res.send(err);
-        });
-    })
-    .catch(function (err) {
-      res.send('No hay resultados');
-    });
-});
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 app.listen(5000, () => console.log('Server on'));
