@@ -10,7 +10,7 @@ import PersonForm from './section/PersoForm'
 import VendedoForm from './section/VendedorForm'
 import LocalForm from './section/LocalForm'
 import ProductForm from './section/ProductoForm'
-
+import ProveForm from './section/ProvedorForm'
 export class Section extends Component {
     render() {
         return (
@@ -20,6 +20,7 @@ export class Section extends Component {
                     <Route path="/regAVendedor" component={VendedoForm} exact  />
                     <Route path="/regALocal" component={LocalForm} exact  />
                     <Route path="/regAProduct" component={ProductForm} exact  />
+                    <Route path="/regAProveedor" component={ProveForm} exact  />
                     <Route path="/product" component={Products} exact  />
                     <Route path="/product/:id" component={Details} exact />
                     <Route path="/cart" component={Cart}  exact/>
