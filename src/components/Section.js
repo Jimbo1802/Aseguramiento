@@ -20,7 +20,7 @@ export class Section extends Component {
                     <Route path="/regAVendedor" component={VendedoForm} exact  />
                     <Route path="/regALocal" component={LocalForm} exact  />
                     <Route path="/regAProduct" component={ProductForm} exact  />
-                    <Route path="/regAProvedor" component={ProveForm} exact  />
+                    <Route path="/regAProveedor" component={ProveForm} exact  />
                     <Route path="/product" component={Products} exact  />
                     <Route path="/product/:id" component={Details} exact />
                     <Route path="/cart" component={Cart}  exact/>

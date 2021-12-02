@@ -18,6 +18,7 @@ class Nav extends React.Component {
                     <li><Link to="/regAPerson">Cliente</Link></li>
                     <li><Link to="/regAVendedor">Vendedor</Link></li>
                     <li><Link to="/regAProduct">Producto</Link></li>
+                    <li><Link to="/regAProveedor">Proveedor</Link></li>
                     <li><Link to="/regALocal">Local</Link></li>
                     <li><Link to="/login">Login / Register</Link></li>
                         
